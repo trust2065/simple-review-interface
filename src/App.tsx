@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { collection, getDocs, query } from 'firebase/firestore';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -41,13 +42,30 @@ function App(): ReactElement {
     >(undefined);
 
     useEffect(() => {
-        (async (): Promise<void> => {
-            const queryUsers = query(collection(db, 'users'));
-            const usersResponse = (await getDocs(queryUsers)).docs.map(
-                doc => doc.data() as IUser
-            );
-            setUsers(usersResponse);
-        })();
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                if (!credential) {
+                    throw new Error('');
+                }
+                const token = credential.accessToken;
+                console.log(token);
+                const user = result.user;
+                console.log(user);
+                // ...
+
+                (async (): Promise<void> => {
+                    const queryUsers = query(collection(db, 'users'));
+                    const usersResponse = (await getDocs(queryUsers)).docs.map(
+                        doc => doc.data() as IUser
+                    );
+                    setUsers(usersResponse);
+                })();
+            }).catch((error) => {
+                console.error(error);
+            });
     }, []);
 
     const singleSelectQ1: SingleSelectProps = {

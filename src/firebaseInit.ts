@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: process.env.APIKEY,
+    apiKey: process.env.REACT_APP_FIREBASEAPIKEY,
     authDomain: 'dot-dev-review-interface.firebaseapp.com',
     databaseURL:
         'https://dot-dev-review-interface-default-rtdb.asia-southeast1.firebasedatabase.app',
